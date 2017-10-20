@@ -38,24 +38,27 @@ app.controller('geekController', ['$scope', '$location', function($scope, $locat
 		$scope.$apply();
 	}, 0.1);
 
-/* ~Functions~ */
-		tHelp = function() {
+
+		/* ~Functions~ */
+		function tHelp() {
 			setTimeout(function() {
 				$scope.$broadcast('terminal-output', {
 					output: true,
 					text: ['Available Commands:',
-						'help: Get Help',
-						'man: what we do',
-						'ls: current events',
-						'clr: clear screen'
+						'help\t: Get help',
+						'man\t: What we do',
+						'ls\t: Current events',
+						'cat\t: File content',
+						'clr\t: Clear screen',
+						'exit\t: Exit'
 					],
 					breakLine: true
 				});
 				$scope.$apply();
 			}, 0.1);
-		};
+		}
 
-		tMan = function() {
+		function tMan() {
 			setTimeout(function() {
 				$scope.$broadcast('terminal-output', {
 					output: true,
@@ -66,21 +69,51 @@ app.controller('geekController', ['$scope', '$location', function($scope, $locat
 				});
 				$scope.$apply();
 			}, 0.1);
-		};
+		}
 
-		tLs= function() {
+		function tLs() {
 			setTimeout(function() {
 				$scope.$broadcast('terminal-output', {
 					output: true,
-					text: ['Aug 25 2016: MIST GBM - NLH 105 @ 5:30pm'
+					text: ['Membership Drive',
+					'Current Events',
+					'MUPy',
+					'//Use cat to view contents'
 					],
 					breakLine: true
 				});
 				$scope.$apply();
 			}, 0.1);
-		};
+		}
 
-		tClr = function() {
+		function tCat(cmd) {
+			debugger;
+			setTimeout(function() {
+					var ce='Workshop on Website Penetration (2nd Yrs only)\n 27th August at 5:45 PM\n NLH 204';
+					var py="PyPals is organizing MUPy, a conference to foster interest and awareness about Python.\n  Along with several alumni of the college, PyPals shall also be inviting renowned speakers from different parts of the country to motivate and inspire coders and beginners alike.\n  Check them out at www.pypals.org";
+					var def="Usage: cat [FILE]";
+					var mem="Come Join Manipal Information Security Team aka MIST\n  The only security club of its kind in Manipal\n  Fee: 100/- only\n  Join the whatsapp group at http://bit.do/mist_members"
+					switch(cmd.command) {
+						case 'cat Current Events': str=ce; break;
+						case 'cat MUPy': str=py; break;
+						case 'cat Membership Drive': ;
+						case 'cat Membership': str=mem; break;
+						default: str=def;
+					}
+				$scope.$broadcast('terminal-output', {
+					output: true,
+					text: [str],
+					breakLine: true
+				});
+				$scope.$apply();
+			}, 0.1);
+		}
+		
+		function tExit() {
+			$location.url("http://localhost/WeAreMIST.github.io/");
+		}
+
+		function tClr() {
 			setTimeout(function() {
 				$scope.results.splice(0, $scope.results.length);
 				$scope.$apply();
@@ -93,9 +126,9 @@ app.controller('geekController', ['$scope', '$location', function($scope, $locat
 				});
 				$scope.$apply();
 			}, 0.1);
-		};
+		}
 
-		tDefault = function() {
+		function tDefault() {
 			setTimeout(function() {
 				$scope.$broadcast('terminal-output', {
 					output: true,
@@ -106,16 +139,18 @@ app.controller('geekController', ['$scope', '$location', function($scope, $locat
 				});
 				$scope.$apply();
 			}, 0.1);
-		};
+		}
 
-
+		/* Take user input */
 		$scope.$on('terminal-input', function(e, consoleInput) {
 			var cmd = consoleInput[0];
-			switch(cmd.command) {
+			switch(cmd.command.split(" ")[0]) {
 				case 'help': tHelp(); break;
 				case 'man': tMan(); break;
 				case 'ls' : tLs(); break;
+				case 'cat' : tCat(cmd); break;
 				case 'clr': tClr(); break;
+				case 'exit': tExit(); break;
 				default: tDefault();
 			}
 
